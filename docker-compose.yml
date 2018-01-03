@@ -1,4 +1,4 @@
-version : 1
+version : "2"
 services:
         master:
                 image: mysql
@@ -7,9 +7,10 @@ services:
                 ports:
                         - "3307:3306"
                 volumes:
-                        - "mysql-m.cnf:/etc/mysql/mysql.cnf"
+                        - "./mysql-m.cnf:/etc/mysql/mysql.cnf"
                 command:
-                        - "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+                        - "--character-set-server=utf8mb4"
+                        - "--collation-server=utf8mb4_unicode_ci"
         slave:
                 image: mysql
                 environment:
@@ -21,6 +22,17 @@ services:
                 ports:
                         - "3308:3306"
                 volumes:
-                        - "mysql-s.cnf:/etc/mysql/mysql.cnf"
+                        - "./mysql-s.cnf:/etc/mysql/mysql.cnf"
                 command:
-                        - "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+                        - "--character-set-server=utf8mb4"
+                        - "--collation-server=utf8mb4_unicode_ci"
+        php:
+                image: tu6ge/php-mysql
+                links:
+                        - "master:mysql-m"
+                        - "slave:mysql-s"
+                depends_on:
+                        - master
+                        - slave 
+                volumes:
+                        - "./php/mysql.php:/var/www/html/mysql.php" 
