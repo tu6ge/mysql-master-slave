@@ -1,0 +1,26 @@
+version : 1
+services:
+        master:
+                image: mysql
+                environment:
+                        MYSQL_ROOT_PASSWORD: admin
+                ports:
+                        - "3307:3306"
+                volumes:
+                        - "mysql-m.cnf:/etc/mysql/mysql.cnf"
+                command:
+                        - "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+        slave:
+                image: mysql
+                environment:
+                        MYSQL_ROOT_PASSWORD: admin
+                links:
+                        - "master:master"
+                depends_on:
+                        - master
+                ports:
+                        - "3308:3306"
+                volumes:
+                        - "mysql-s.cnf:/etc/mysql/mysql.cnf"
+                command:
+                        - "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
