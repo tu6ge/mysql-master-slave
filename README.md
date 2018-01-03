@@ -1,6 +1,6 @@
 主库里面运行如下指令
 
-GRANT REPLICATION SLAVE ON *.* to 'backup'@'%' identified by '123456';
+<code>GRANT REPLICATION SLAVE ON *.* to 'backup'@'%' identified by '123456';</code>
 
 创建一个用户，然后查看主库状态
 
