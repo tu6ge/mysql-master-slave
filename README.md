@@ -1,4 +1,4 @@
-#用docker-compose和php实现的读写分离
+# 用docker-compose和php实现的读写分离
 用Dockerfile创建一个php-fpm的镜像，主要是为了包含mysqli扩展
 然后把php/mysql.php文件添加到php镜像里面，
 php镜像里面，我增加了两个环境变量，存放主库和分库的链接信息
