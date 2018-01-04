@@ -1,5 +1,5 @@
 <?php
-sleep(30);
+sleep(60);
 
 $master_db = parse_url($_ENV['MASTER_DB_LINK']);
 $master_db['port'] = $master['port']?:3306;
