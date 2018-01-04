@@ -3,7 +3,7 @@ services:
         master:
                 image: mysql
                 environment:
-                        MYSQL_ROOT_PASSWORD: admin
+                        MYSQL_ROOT_PASSWORD: password_m
                 ports:
                         - "3307:3306"
                 volumes:
@@ -14,9 +14,9 @@ services:
         slave:
                 image: mysql
                 environment:
-                        MYSQL_ROOT_PASSWORD: admin
+                        MYSQL_ROOT_PASSWORD: password_s
                 links:
-                        - "master:master"
+                        - master:master
                 depends_on:
                         - master
                 ports:
@@ -26,13 +26,34 @@ services:
                 command:
                         - "--character-set-server=utf8mb4"
                         - "--collation-server=utf8mb4_unicode_ci"
-        php:
-                image: tu6ge/php-mysql
+        slave2:
+                image: mysql
+                environment:
+                        MYSQL_ROOT_PASSWORD: password_s
                 links:
-                        - "master:mysql-m"
-                        - "slave:mysql-s"
+                        - master:master
+                depends_on:
+                        - master
+                ports:
+                        - "3309:3306"
+                volumes:
+                        - "./mysql-s2.cnf:/etc/mysql/mysql.cnf"
+                command:
+                        - "--character-set-server=utf8mb4"
+                        - "--collation-server=utf8mb4_unicode_ci"
+
+        php:
+                image: tu6ge/php-mysql-backup
+                links:
+                        - master:master
+                        - slave:slave
+                        - slave2:salve2
                 depends_on:
                         - master
                         - slave 
+                        - slave2
                 volumes:
                         - "./php/mysql.php:/var/www/html/mysql.php" 
+                environment:
+                        MASTER_DB_LINK: "mysql://root:password_m@master"
+                        SLAVE_DB_LINKS: "mysql://root:password_s@slave|mysql://root:password_s@slave2"
